@@ -55,25 +55,5 @@ const AddProductForm = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 15,
-        paddingLeft: 10,
-    },
-    error: {
-        color: 'red',
-        marginBottom: 15,
-    },
-});
 
 export default AddProductForm;
