@@ -1,5 +1,21 @@
-
 {
-  "farmacelticos": [],
-  "pacientes": []
+  "farmacelticos": [
+    {
+      "nome": "João",
+      "email": "joao@exemplo.com",
+      "senha": "123456"
+    }
+  ],
+  "pacientes": [
+    {
+      "nome": "jose",
+      "email": "joao@exemplo.com",
+      "senha": "123456"
+    },
+    {
+      "nome": "jose",
+      "email": "jose@exemplo.com",
+      "senha": "123456"
+    }
+  ]
 }

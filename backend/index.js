@@ -2,15 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = "sua_chave_secreta";
+
 const app = express();
 const PORT = 3000;
-const SECRET_KEY = 'sua_chave_secreta'; // Troque por uma chave forte
 
 app.use(cors());
 app.use(bodyParser.json());
 
-//usuários
+//save usuários
 const USERS_FILE = "./users.json";
 let users = [];
 if (fs.existsSync(USERS_FILE)) {
@@ -28,17 +29,32 @@ app.post("/api/login", (req, res) => {
   res.json({ message: "Login realizado", tipo: user.tipo });
 });
 
-// Exemplo de rota protegida para farmacêutico
-app.get("/api/farmaceutico-area", (req, res) => {
-  // Aqui você pode implementar autenticação real (token/jwt)
+// Middleware
+function autenticaFarmaceutico(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Token não enviado" });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.tipo !== "farmaceutico")
+      return res.status(403).json({ error: "Acesso negado" });
+    next();
+  } catch {
+    return res.status(401).json({ error: "Token inválido" });
+  }
+}
+
+// rota para farmacêutico
+app.get("/api/farmaceutico-area", autenticaFarmaceutico, (req, res) => {
   res.json({ message: "Área do farmacêutico" });
 });
 
-// Exemplo de rota protegida para cliente
+//rota para cliente
 app.get("/api/cliente-area", (req, res) => {
   res.json({ message: "Área do cliente" });
 });
 
+//rota medicamentos
 const DATA_FILE = "./medicamentos.json";
 let medicamentos = [];
 if (fs.existsSync(DATA_FILE)) {
@@ -79,7 +95,7 @@ app.delete("/api/products/:id", (req, res) => {
 
 const USER_FILE = "./user.json";
 
-// Função para ler usuários
+//le usuários
 function readUsers() {
   if (fs.existsSync(USER_FILE)) {
     return JSON.parse(fs.readFileSync(USER_FILE));
@@ -87,12 +103,12 @@ function readUsers() {
   return { farmacelticos: [], pacientes: [] };
 }
 
-// Função para salvar usuários
+//salva usuários
 function saveUsers(users) {
   fs.writeFileSync(USER_FILE, JSON.stringify(users, null, 2));
 }
 
-// Cadastro farmacêutico
+//Cadastra farma
 app.post("/api/register/farmaceltico", (req, res) => {
   const { nome, email, senha } = req.body;
   const users = readUsers();
@@ -116,7 +132,7 @@ app.post("/api/register/paciente", (req, res) => {
   res.status(201).json({ message: "Cadastro realizado com sucesso" });
 });
 
-// Login farmacêutico com JWT
+// Login farma JWT
 app.post("/api/login/farmaceltico", (req, res) => {
   const { email, senha } = req.body;
   const users = readUsers();
@@ -126,11 +142,15 @@ app.post("/api/login/farmaceltico", (req, res) => {
   if (!user) return res.status(401).json({ error: "Credenciais inválidas" });
 
   // Gera token
-  const token = jwt.sign({ email: user.email, tipo: 'farmaceutico' }, SECRET_KEY, { expiresIn: '2h' });
+  const token = jwt.sign(
+    { email: user.email, tipo: "farmaceutico" },
+    SECRET_KEY,
+    { expiresIn: "2h" }
+  );
   res.json({
     message: "Login realizado com sucesso",
     user: { nome: user.nome, email: user.email },
-    token
+    token,
   });
 });
 
