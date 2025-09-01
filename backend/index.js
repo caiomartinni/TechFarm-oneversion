@@ -8,14 +8,14 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Carrega usuários
+//usuários
 const USERS_FILE = "./users.json";
 let users = [];
 if (fs.existsSync(USERS_FILE)) {
   users = JSON.parse(fs.readFileSync(USERS_FILE));
 }
 
-// Rota de login
+//login usuario 
 app.post("/api/login", (req, res) => {
   const { username, password, tipo } = req.body;
   const user = users.find(
