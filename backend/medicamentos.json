@@ -1,8 +1,16 @@
 [
   {
+    "id": "1756771221731",
     "nome": "Dipirona",
-    "quantidade": 120,
-    "validade": "2026-12-31",
-    "id": "1756337949143"
+    "quantidade": 10,
+    "validade": "2025-12-31",
+    "tipoDor": "cabeça"
+  },
+  {
+    "nome": "Buscopan",
+    "quantidade": 5,
+    "validade": "2025-10-01",
+    "tipoDor": "colica",
+    "id": "1756771394840"
   }
 ]

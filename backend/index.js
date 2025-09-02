@@ -168,4 +168,11 @@ app.post("/api/login/paciente", (req, res) => {
   });
 });
 
+// Buscar medicamentos por tipo de dor
+app.get("/api/products/dor/:tipoDor", (req, res) => {
+  const { tipoDor } = req.params;
+  const filtrados = medicamentos.filter((m) => m.tipoDor === tipoDor);
+  res.json(filtrados);
+});
+
 app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
